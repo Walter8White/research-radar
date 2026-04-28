@@ -1,0 +1,203 @@
+domains:
+  frontier_ai:
+    description: "Frontier models, agentic AI, multimodal AI, reasoning, AI labs"
+    priority: high
+    keywords:
+      - frontier AI
+      - foundation models
+      - large language models
+      - LLM
+      - multimodal AI
+      - reasoning models
+      - agentic AI
+      - autonomous agents
+      - AI agents
+      - tool use
+      - computer use
+      - long context
+      - model evaluation
+      - AI benchmarks
+      - synthetic data
+      - post-training
+      - RLHF
+      - test-time compute
+
+  robotics_physical_ai:
+    description: "Robotics, embodied AI, physical AI, world models, robot learning"
+    priority: high
+    keywords:
+      - robotics
+      - robot learning
+      - embodied AI
+      - physical AI
+      - world models
+      - robot foundation models
+      - vision-language-action models
+      - VLA
+      - manipulation
+      - tactile sensing
+      - soft robotics
+      - humanoid robots
+      - autonomous robots
+      - simulation for robotics
+      - sim2real
+      - reinforcement learning robotics
+      - imitation learning robotics
+      - deformable object manipulation
+
+  infrastructure_compute:
+    description: "AI infrastructure, chips, GPUs, cloud, datacenters, edge compute"
+    priority: high
+    keywords:
+      - AI infrastructure
+      - GPU
+      - GPUs
+      - accelerator
+      - AI chips
+      - semiconductors
+      - NVIDIA
+      - AMD
+      - Intel
+      - TSMC
+      - ASML
+      - cloud computing
+      - data center
+      - inference optimization
+      - training cluster
+      - compute
+      - edge AI
+      - CUDA
+      - TPU
+      - HBM
+      - memory bandwidth
+
+  business_startups_ma:
+    description: "Startups, acquisitions, funding, market structure, big tech moves"
+    priority: high
+    keywords:
+      - startup
+      - funding
+      - seed round
+      - Series A
+      - Series B
+      - acquisition
+      - acquired
+      - merger
+      - M&A
+      - partnership
+      - strategic investment
+      - valuation
+      - revenue
+      - enterprise AI
+      - AI product
+      - AI platform
+      - big tech
+      - hyperscaler
+
+  geopolitics_regulation:
+    description: "AI geopolitics, export controls, regulation, sovereignty, safety"
+    priority: high
+    keywords:
+      - AI regulation
+      - AI Act
+      - export controls
+      - chip ban
+      - sanctions
+      - national security
+      - AI safety
+      - AI governance
+      - compute governance
+      - sovereign AI
+      - digital sovereignty
+      - China AI
+      - US China tech war
+      - EU AI
+      - military AI
+      - defense AI
+      - dual-use technology
+      - critical infrastructure
+
+  open_source_devtools:
+    description: "Open-source models, repos, frameworks, developer tools"
+    priority: medium
+    keywords:
+      - open source AI
+      - open-source
+      - GitHub
+      - model release
+      - Hugging Face
+      - framework
+      - SDK
+      - developer tools
+      - agents framework
+      - inference engine
+      - vector database
+      - evals
+      - benchmark suite
+      - fine-tuning
+      - local AI
+      - open weights
+
+  research_papers:
+    description: "Important papers, new methods, academic signals"
+    priority: medium
+    keywords:
+      - arXiv
+      - paper
+      - preprint
+      - benchmark
+      - dataset
+      - architecture
+      - method
+      - experiments
+      - state of the art
+      - SOTA
+      - NeurIPS
+      - ICML
+      - ICLR
+      - CVPR
+      - CoRL
+      - ICRA
+      - RSS
+
+priority_topics:
+  - frontier AI
+  - agentic AI
+  - robotics
+  - physical AI
+  - embodied AI
+  - world models
+  - AI infrastructure
+  - semiconductors
+  - NVIDIA
+  - TSMC
+  - export controls
+  - AI regulation
+  - acquisition
+  - funding
+  - open source AI
+  - US China tech war
+  - sovereign AI
+
+negative_topics:
+  - generic AI productivity hacks
+  - low-effort prompt engineering
+  - AI girlfriend
+  - get rich with AI
+  - crypto AI
+  - NFT
+  - trading bot
+  - motivational thread
+  - engagement bait
+  - listicle
+  - no technical detail
+  - vague announcement
+
+strategic_questions:
+  - "Does this change who controls the AI stack?"
+  - "Does this affect compute access or infrastructure power?"
+  - "Does this indicate consolidation in the market?"
+  - "Does this create geopolitical or regulatory consequences?"
+  - "Does this reveal a new technical capability?"
+  - "Does this matter for robotics or physical AI?"
+  - "Is this a weak signal or just noise?"

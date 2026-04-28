@@ -1,0 +1,61 @@
+feeds:
+  # Frontier AI / Labs
+  - name: OpenAI News
+    category: frontier_ai
+    url: https://openai.com/news/rss.xml
+
+  - name: Google DeepMind Blog
+    category: frontier_ai
+    url: https://deepmind.google/discover/blog/rss.xml
+
+  - name: Anthropic News
+    category: frontier_ai
+    url: https://www.anthropic.com/news/rss.xml
+
+  - name: Hugging Face Blog
+    category: open_source_devtools
+    url: https://huggingface.co/blog/feed.xml
+
+  # Research
+  - name: Berkeley AI Research
+    category: research_papers
+    url: https://bair.berkeley.edu/blog/feed.xml
+
+  - name: MIT News AI
+    category: research_papers
+    url: https://news.mit.edu/rss/topic/artificial-intelligence2
+
+  # Tech business / market
+  - name: TechCrunch AI
+    category: business_startups_ma
+    url: https://techcrunch.com/category/artificial-intelligence/feed/
+
+  - name: VentureBeat AI
+    category: business_startups_ma
+    url: https://venturebeat.com/category/ai/feed/
+
+  - name: The Verge AI
+    category: business_startups_ma
+    url: https://www.theverge.com/rss/ai-artificial-intelligence/index.xml
+
+  # Infrastructure
+  - name: NVIDIA Blog
+    category: infrastructure_compute
+    url: https://blogs.nvidia.com/feed/
+
+  - name: AWS Machine Learning Blog
+    category: infrastructure_compute
+    url: https://aws.amazon.com/blogs/machine-learning/feed/
+
+  - name: Microsoft Azure AI Blog
+    category: infrastructure_compute
+    url: https://techcommunity.microsoft.com/t5/ai-azure-ai-services-blog/bg-p/AzureAIBlog/rss
+
+  # Policy / geopolitics
+  - name: NIST AI
+    category: geopolitics_regulation
+    url: https://www.nist.gov/news-events/news/rss.xml
+
+  - name: OECD AI
+    category: geopolitics_regulation
+    url: https://oecd.ai/en/wonk/rss.xml

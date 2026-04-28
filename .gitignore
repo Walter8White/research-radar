@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# Secrets
+.env
+*.key
+*.pem
+
+# Local data
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+data/*.db-wal
+data/*.db-shm
+data/*.db-journal
+data/cron.log
+
+# Reports
+reports/*.md
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Backups
+*-backup-*/
