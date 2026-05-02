@@ -81,7 +81,7 @@ Do not require terminal usage for the final end-user flow, except for early deve
 ## Phase 0 — Stabilize Current Foundation
 
 ### Status
-TODO
+Done
 
 ### Goal
 Make sure the current Linux packaged app is stable and reproducible.
@@ -115,7 +115,7 @@ Stop after this phase.
 ## Phase 1 — Freshness and Recency Control
 
 ### Status
-TODO
+Done
 
 ### Goal
 Ensure the app only prioritizes recent and current information.
@@ -159,12 +159,48 @@ Show a sample report and confirm that dates and recency look correct.
 
 Stop after this phase.
 
+### Implementation Notes
+- Added a local freshness window setting in the Streamlit sidebar:
+  - `Last 24h`
+  - `Last 3 days`
+  - `Last 7 days`
+  - `Last 30 days`
+- Stored the selected freshness window locally as `RECENCY_WINDOW_DAYS`.
+- Added shared freshness helpers for date normalization, age calculation, filtering, and freshness score adjustment.
+- Applied recency filtering to arXiv, RSS, GitHub collection, and database report selection.
+- Added `freshness_score` and `collected_at` database fields with safe migration for existing local databases.
+- Added visible freshness metadata in reports:
+  - freshness window
+  - published date
+  - collected date
+  - age labels
+- Adjusted report presentation after user review:
+  - removed visible freshness score
+  - removed visible collection date
+  - renamed score to relevance
+  - changed momentum display from numeric metric to a word label
+  - moved GitHub metrics into a right-side visual block in the Streamlit-rendered report
+  - display GitHub growth as `TBD` until enough local snapshot history exists
+  - added best-effort GitHub stargazer history lookup for absolute 24h/7d star growth independent of local app history
+  - removed `TBD` from report output; missing momentum now appears as `Not tracked` or `Not available yet`
+  - added sober emoji accents to report headings and sections
+- Generated a sample report at `reports/2026-04-29.md`.
+
+### Known Issues
+- Existing database rows are rescored for freshness at report time, but their stored `score` is only refreshed after the item is collected again.
+- GitHub fork growth still requires repeated local collections; star growth can use GitHub stargazer history when API quota allows it.
+- GitHub stargazer history lookup is capped per collection run to avoid exhausting unauthenticated API limits.
+- Runtime checks require the project virtual environment because the system Python may not have `beautifulsoup4` installed.
+
+### Deferred Follow-Ups
+- Fix GitHub growth edge cases and stale rows that still lack `github_growth_source`.
+
 ---
 
 ## Phase 2 — Better Scoring and Selection Algorithm
 
 ### Status
-TODO
+Done
 
 ### Goal
 Improve ranking so the morning brief surfaces only the most important signals.
@@ -220,12 +256,39 @@ Generate a report and ask the user:
 
 Stop after this phase.
 
+### Implementation Notes
+- Added multidimensional scoring in `core/scoring.py`:
+  - `relevance_score`
+  - `freshness_score`
+  - `technical_depth_score`
+  - `strategic_importance_score`
+  - `market_impact_score`
+  - `geopolitical_impact_score`
+  - `source_quality_score`
+  - `momentum_score`
+  - `noise_penalty`
+  - `final_score`
+- Kept existing `score` field as the final score for backward compatibility.
+- Added database columns for all scoring dimensions with safe migrations.
+- Updated arXiv, RSS, and GitHub collectors to store scoring dimensions for newly collected items.
+- Added top-brief diversity selection:
+  - max 2 research papers, with one ceiling-breaker override
+  - max 2 GitHub repos, with one ceiling-breaker override
+  - max 2 business/startup items
+  - max 2 infrastructure/geopolitics items
+- Regenerated sample report at `reports/2026-04-29.md`.
+
+### Known Issues
+- Existing rows collected before Phase 2 do not have full score dimensions yet; they will update when recollected.
+- Current ceiling-breaker detection is keyword-based and will need tuning after user review.
+- Business/geopolitics coverage depends heavily on RSS source quality and may still need better feeds.
+
 ---
 
 ## Phase 3 — Report Length Levels
 
 ### Status
-TODO
+Done
 
 ### Goal
 Allow users to choose how long the generated report should be.
@@ -266,12 +329,32 @@ Generate reports at all 4 levels and confirm format/length.
 
 Stop after this phase.
 
+### Implementation Notes
+- Added report length profiles:
+  - `Ultra Short`
+  - `Short`
+  - `Standard`
+  - `Deep`
+- Added a Streamlit sidebar selector for report length.
+- Stored the preference locally as `REPORT_LENGTH`.
+- Added CLI support with `--report-length`.
+- Passed report length to the LLM prompt.
+- Adjusted LLM word budget, TL;DR size, number of top signals, watchlist length, and number of source items per profile.
+- Added deterministic non-LLM fallback that respects report length.
+- `Ultra Short` now emits only a compact morning brief with up to 5 bullets and no raw source sections.
+- `Deep` shows more top items and more raw source items per category.
+- Tested all 4 levels from CLI.
+
+### Known Issues
+- LLM output can still vary slightly around target word budget, but the strongest structural constraints are enforced in prompt and report assembly.
+- All report lengths currently write to the same daily report file, so testing multiple lengths overwrites the previous generated report for that day.
+
 ---
 
 ## Phase 4 — LLM Provider Abstraction
 
 ### Status
-TODO
+Done
 
 ### Goal
 Make LLM usage optional and provider-independent.
@@ -280,50 +363,90 @@ Make LLM usage optional and provider-independent.
 Support:
 
 1. OpenAI API
-2. Ollama local
+2. Claude API
 3. No LLM fallback
 
 ### Tasks
 - Create a provider abstraction:
   - `core/llm/providers.py`
   - `OpenAIProvider`
-  - `OllamaProvider`
+  - `ClaudeProvider`
   - `NoLLMProvider`
 - Add UI selector:
   - `OpenAI`
-  - `Ollama`
+  - `Claude`
   - `Disabled`
 - For OpenAI:
   - user provides API key
   - model configurable
-- For Ollama:
-  - user provides local model name
-  - default suggestion: `llama3.1`, `qwen2.5`, or similar
-  - app calls local Ollama endpoint
+- For Claude:
+  - user provides API key
+  - model configurable
 - If no LLM:
   - generate deterministic structured report from scores and summaries
-- Add connection test buttons:
-  - “Test OpenAI”
-  - “Test Ollama”
-- Show clear error messages.
+- Keep LLM settings simple:
+  - provider selector
+  - provider-specific API key and model fields
+  - one `Save LLM` button with confirmation
 
 ### Expected Result
-Users who do not want paid API calls can use a local open-source LLM.
+Users can choose OpenAI, Claude, or a deterministic no-LLM fallback.
 
 ### Validation With User
 Test:
 - OpenAI mode
+- Claude mode
 - disabled mode
-- Ollama mode if available
 
 Stop after this phase.
+
+### Implementation Notes
+- Added provider abstraction in `core/llm/providers.py`.
+- Added providers:
+  - `OpenAIProvider`
+  - `ClaudeProvider`
+  - `NoLLMProvider`
+- Added UI provider selector:
+  - `OpenAI`
+  - `Claude`
+  - `Disabled`
+- Added local settings for:
+  - `LLM_PROVIDER`
+  - `OPENAI_API_KEY`
+  - `OPENAI_MODEL`
+  - `ANTHROPIC_API_KEY`
+  - `CLAUDE_MODEL`
+- Simplified LLM settings UI:
+  - provider selector is shown first
+  - API key and model fields appear only for the selected provider
+  - removed separate test/disable buttons
+  - `Disabled` is selected from the provider menu
+  - one `Save LLM` button persists settings and shows confirmation
+- Updated report generation to use the selected provider.
+- Kept deterministic fallback for disabled provider or provider failures.
+- Made disabled-mode output explicit:
+  - report header now shows `LLM mode`
+  - fallback section is labeled `Rule-Based Brief (LLM Disabled)`
+  - fallback wording uses source excerpts instead of LLM-like “why it matters” language
+- LLM provider selection is now read fresh from local `.env` at generation time, so toggling provider in Streamlit does not rely on stale process environment values.
+- LLM-generated sections are labeled `LLM Brief`; disabled-mode sections are labeled `Rule-Based Brief (LLM Disabled)`.
+- Detail sections now show `Source digest` snippets instead of raw signal dumps:
+  - papers prioritize contribution/method/result sentences from the abstract
+  - RSS and GitHub items show short cleaned source digests
+  - GitHub numeric metadata stays in the dedicated metrics block
+- Updated `.env.example` with provider settings.
+- Removed Ollama support after product decision to keep Phase 4 focused on OpenAI, Claude, and no-LLM fallback.
+
+### Known Issues
+- Claude and OpenAI calls happen during report generation when those providers are selected.
+- Provider failures fall back to deterministic report text and include the provider error in the generated report.
 
 ---
 
 ## Phase 5 — Automation Agent / Scheduler
 
 ### Status
-TODO
+Done
 
 ### Goal
 Allow the user to schedule automatic reports on their own computer.
@@ -367,12 +490,44 @@ On Linux, verify:
 
 Stop after this phase.
 
+### Implementation Notes
+- Added Linux-first automation support through user cron.
+- Added `core/automation.py`:
+  - builds safe cron command previews
+  - installs a marked `Research Radar` crontab block
+  - removes only the marked `Research Radar` block when disabling automation
+- Added Streamlit `Automation` section:
+  - schedule: `Daily` or `Weekdays`
+  - custom 24h run time
+  - output folder
+  - collect fresh sources toggle
+  - open report automatically toggle
+  - desktop notification toggle
+  - safe scheduled command preview
+  - `Save Automation`
+  - `Run Now`
+  - `Disable Automation`
+- Cron entries include available desktop environment variables (`DISPLAY`, `DBUS_SESSION_BUS_ADDRESS`, `XDG_RUNTIME_DIR`, `WAYLAND_DISPLAY`) so `notify-send` has a better chance of working from cron.
+- Added CLI options:
+  - `--output-dir`
+  - `--open-report`
+  - `--notify`
+- `Run Now` uses the automation settings without writing cron.
+- Added `.env.example` defaults for automation preferences.
+
+### Known Issues
+- Linux cron only for Phase 5.
+- `notify-send` is required for desktop notifications.
+- Desktop notifications from cron depend on the active Linux session exposing notification bus variables when automation is saved.
+- `xdg-open` is required for automatic report opening.
+- Cron runs in the project directory and logs to `data/automation.log`.
+
 ---
 
 ## Phase 6 — Twitter / X Source Integration
 
 ### Status
-TODO
+Implemented — awaiting user validation
 
 ### Goal
 Incorporate influential public discussion from Twitter/X.
@@ -390,24 +545,11 @@ The product should capture:
 Do not scrape aggressively or violate platform rules.
 
 ### Preferred Approach
-Start with Bring Your Own API / export / manual watchlist.
+Start with Bring Your Own API and automatic recent search from the user's configured topics, companies, people, and optional account watchlist.
 
-Possible modes:
+Possible later modes:
 
-1. Manual mode
-   - user adds tweet URLs manually
-   - app fetches metadata if possible
-   - safest MVP
-
-2. Watchlist mode
-   - user maintains list of accounts
-   - app checks recent posts if API access is configured
-
-3. API mode
-   - user provides X/Twitter API token
-   - app collects recent posts from watchlisted accounts
-
-4. Alternative social sources
+1. Alternative social sources
    - Bluesky
    - RSS mirrors
    - official blogs
@@ -420,7 +562,6 @@ Possible modes:
 - Add UI for:
   - accounts to watch
   - people/companies of interest
-  - manual post URLs
 - Add social collector abstraction.
 - Add scoring for social items:
   - source credibility
@@ -446,9 +587,35 @@ The report can say things like:
 - “A public conflict around export controls is emerging…”
 
 ### Validation With User
-Start with manual tweet URL mode before full API.
+Start with automatic X recent search using user-provided X API bearer token.
 
 Stop after this phase.
+
+### Implementation Notes
+- Added `config/social_sources.yaml`.
+- Added official X API recent-search collector in `collectors/social_collector.py`.
+- The X query is built automatically from:
+  - `focus_topics`
+  - `companies_focus`
+  - `people_focus`
+  - optional account watchlist in `config/social_sources.yaml`
+- Added `X_BEARER_TOKEN` local setting in `.env.example` and Streamlit UI.
+- Added `Public Signals` sidebar section:
+  - X API bearer token
+  - optional account watchlist
+  - max X posts per run
+  - enable/disable X collection
+- Added `Social` collector to `collect_all`.
+- Added report category:
+  - `People & Public Signals`
+- Added scoring support for `people_public_signals` / `x_api`.
+- Uses official X API endpoint only; no browser scraping.
+
+### Known Issues
+- X recent search requires the user's own X API access and bearer token.
+- X API tiers and limits may prevent recent search depending on the user's account.
+- The current collector runs one bounded query per collection run and does not paginate.
+- Query length is capped conservatively, so very long topic/company/people lists may be truncated.
 
 ---
 
@@ -624,6 +791,10 @@ Update this section after every development step.
 - Momentum scores require multiple snapshots over time.
 - RSS feeds can be malformed but often still parse.
 - GitHub unauthenticated API can hit 403 rate limits.
+- Existing database rows receive report-time freshness recalculation until they are collected again.
+- Existing rows collected before Phase 2 do not have full score dimensions until recollected.
+- Phase 1 follow-ups remain: fix GitHub growth edge cases and research paper raw signals.
+- Report length tests overwrite the same daily markdown file.
 
 ---
 
@@ -638,11 +809,35 @@ Update this section after every completed phase.
 - Prefer explicit user configuration over hidden automation.
 - Keep UI understandable for non-terminal users.
 - Keep advanced features optional.
+- Phase 1 added recency controls and report-visible freshness without adding a cloud backend or requiring accounts.
+- Phase 2 added multidimensional scoring and diversified top-brief selection while keeping the app local-first.
+- Phase 3 added report density controls with LLM and non-LLM support.
+- Phase 4 added provider abstraction for OpenAI, Claude, and disabled/no-LLM mode.
+- Phase 4 originally explored Ollama, then removed it to keep provider choices simpler and avoid local server/cloud-free-tier ambiguity.
+- Phase 5 added Linux cron automation with explicit preview and user-triggered save/disable actions.
+- Phase 6 added automatic X recent-search collection from user topics, companies, people, and optional watched accounts.
+- Improved sidebar focus settings wording:
+  - `Priority topics` became `What to track closely`
+  - `Negative topics` became `What to avoid`
+  - `Domain keywords` became `Signal groups`
+  - removed the confusing reload topics button
+  - made focus and matching-term text areas taller
+  - clarified that matching terms classify/rank items and are complementary to focus topics
+- Simplified the user-facing focus model:
+  - users now configure as many focus topics as they want
+  - users first save the topic list
+  - each saved focus topic then gets a priority menu: `Critical`, `High`, `Medium`, or `Low`
+  - priorities are saved separately with `Save priorities`
+  - users still configure a simple `What to avoid` list
+  - added placeholder lists for companies focus and people focus
+  - signal-group keywords remain internal backend configuration, hidden from the main UI
+  - backend collection and scoring now read the new `focus_topics` structure with fallback to legacy `priority_topics`
+  - collectors no longer use hidden signal-group keywords as search queries; arXiv and GitHub collection now starts from user-saved topics only
 
 ---
 
 # Next Step
 
-Start with **Phase 0 — Stabilize Current Foundation**.
+Validate **Phase 4** with the user.
 
-Do not proceed to Phase 1 until the user validates Phase 0.
+Do not proceed to Phase 5 until the user validates Phase 4.

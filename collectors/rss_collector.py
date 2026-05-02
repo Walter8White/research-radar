@@ -3,7 +3,13 @@ from pathlib import Path
 import yaml
 import feedparser
 
-from core.scoring import score_item
+from core.scoring import score_item_breakdown
+from core.freshness import (
+    DEFAULT_RECENCY_DAYS,
+    freshness_score,
+    is_recent,
+    normalize_datetime_string,
+)
 
 
 RSS_PATH = Path("config/rss_feeds.yaml")
@@ -16,7 +22,10 @@ def load_feeds() -> List[Dict]:
     return config.get("feeds", [])
 
 
-def collect_rss(max_entries_per_feed: int = 6) -> List[Dict]:
+def collect_rss(
+    max_entries_per_feed: int = 6,
+    recency_days: int = DEFAULT_RECENCY_DAYS,
+) -> List[Dict]:
     feeds = load_feeds()
     items = []
 
@@ -35,10 +44,24 @@ def collect_rss(max_entries_per_feed: int = 6) -> List[Dict]:
                 title = entry.get("title", "").strip()
                 link = entry.get("link", "").strip()
                 summary = entry.get("summary", "").strip()
-                published = entry.get("published", "")
+                published = normalize_datetime_string(
+                    entry.get("published_parsed") or entry.get("updated_parsed") or entry.get("published") or entry.get("updated")
+                )
 
                 if not title or not link:
                     continue
+
+                if not is_recent(published, recency_days):
+                    continue
+
+                item_freshness_score = freshness_score(published, recency_days)
+                score_breakdown = score_item_breakdown(
+                    title,
+                    summary,
+                    category=category,
+                    source_type="rss",
+                    freshness_score=item_freshness_score,
+                )
 
                 item = {
                     "source_type": "rss",
@@ -49,7 +72,8 @@ def collect_rss(max_entries_per_feed: int = 6) -> List[Dict]:
                     "author": entry.get("author", name),
                     "published_at": published,
                     "raw_text": summary,
-                    "score": score_item(title, summary, category=category),
+                    "score": score_breakdown["final_score"],
+                    **score_breakdown,
                 }
 
                 items.append(item)

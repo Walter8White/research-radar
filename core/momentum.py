@@ -1,5 +1,5 @@
 import math
-from typing import Dict, Tuple
+from typing import Dict
 
 from core.database import get_latest_metric_before
 
@@ -16,7 +16,7 @@ def calculate_github_momentum_score(
 ) -> float:
     """
     Momentum is intentionally sublinear.
-    A repo going viral should matter, but not hijack the whole ranking like a raccoon in a control room.
+    A repo going viral should matter, but not hijack the whole ranking.
     """
 
     raw = (
@@ -61,6 +61,8 @@ def get_github_growth_metrics(item_url: str, current: Dict) -> Dict:
     )
 
     return {
+        "has_24h_baseline": metric_24h is not None,
+        "has_7d_baseline": metric_7d is not None,
         "stars_growth_24h": stars_growth_24h,
         "stars_growth_7d": stars_growth_7d,
         "forks_growth_7d": forks_growth_7d,

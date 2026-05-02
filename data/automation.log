@@ -1,0 +1,70 @@
+Cannot autolaunch D-Bus without X11 $DISPLAY
+[Collect] Running arXiv collector...
+[arXiv] Searching: frontier AI
+[arXiv] Searching: robotics
+[arXiv] Searching: physical AI
+[arXiv] Searching: AI infrastructure
+[Collect] arXiv: 0/3 new items inserted.
+[Collect] Running GitHub collector...
+[GitHub] Searching: frontier AI
+[GitHub] Searching: robotics
+[GitHub] Searching: robotics simulation
+[GitHub] Searching: physical AI
+[GitHub] Searching: AI infrastructure
+[Collect] GitHub: 0/1 new items inserted.
+[Collect] Running RSS collector...
+[RSS] Warning for Google DeepMind Blog: feed may be malformed
+[RSS] Warning for Anthropic News: feed may be malformed
+[RSS] Warning for VentureBeat AI: feed may be malformed
+[RSS] Warning for Microsoft Azure AI Blog: feed may be malformed
+[RSS] Warning for OECD AI: feed may be malformed
+[Collect] RSS: 1/20 new items inserted.
+[Collect] Done. Total new items: 1
+[DB] Total items: 270
+[Report] Generated: reports/2026-04-29.md
+[Collect] Running arXiv collector...
+[arXiv] Searching: frontier AI
+[arXiv] Searching: robotics
+[arXiv] Searching: physical AI
+[arXiv] Searching: AI infrastructure
+[Collect] arXiv: 0/3 new items inserted.
+[Collect] Running GitHub collector...
+[GitHub] Searching: frontier AI
+[GitHub] Searching: robotics
+[GitHub] Searching: robotics simulation
+[GitHub] Searching: physical AI
+[GitHub] Searching: AI infrastructure
+[Collect] GitHub: 0/1 new items inserted.
+[Collect] Running RSS collector...
+[RSS] Warning for Google DeepMind Blog: feed may be malformed
+[RSS] Warning for Anthropic News: feed may be malformed
+[RSS] Warning for VentureBeat AI: feed may be malformed
+[RSS] Warning for Microsoft Azure AI Blog: feed may be malformed
+[RSS] Warning for OECD AI: feed may be malformed
+[Collect] RSS: 0/20 new items inserted.
+[Collect] Done. Total new items: 0
+[DB] Total items: 270
+[Report] Generated: reports/2026-04-29.md
+[Collect] Running arXiv collector...
+[arXiv] Searching: frontier AI
+[arXiv] Searching: robotics
+[arXiv] Searching: physical AI
+[arXiv] Searching: AI infrastructure
+[Collect] arXiv: 0/3 new items inserted.
+[Collect] Running GitHub collector...
+[GitHub] Searching: frontier AI
+[GitHub] Searching: robotics
+[GitHub] Searching: robotics simulation
+[GitHub] Searching: physical AI
+[GitHub] Searching: AI infrastructure
+[Collect] GitHub: 0/1 new items inserted.
+[Collect] Running RSS collector...
+[RSS] Warning for Google DeepMind Blog: feed may be malformed
+[RSS] Warning for Anthropic News: feed may be malformed
+[RSS] Warning for VentureBeat AI: feed may be malformed
+[RSS] Warning for Microsoft Azure AI Blog: feed may be malformed
+[RSS] Warning for OECD AI: feed may be malformed
+[Collect] RSS: 1/20 new items inserted.
+[Collect] Done. Total new items: 1
+[DB] Total items: 271
+[Report] Generated: reports/2026-04-29.md

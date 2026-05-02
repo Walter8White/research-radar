@@ -1,0 +1,12 @@
+enabled: true
+max_results: 25
+language: en
+include_reposts: false
+include_replies: false
+accounts:
+  - handle: sama
+    name: Sam Altman
+  - handle: demishassabis
+    name: Demis Hassabis
+  - handle: ylecun
+    name: Yann LeCun

@@ -32,3 +32,9 @@ reports/*.md
 
 # Backups
 *-backup-*/
+
+# Build outputs
+build/
+dist/
+release/
+*.spec
